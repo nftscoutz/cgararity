@@ -1,6 +1,6 @@
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Checkbox, Divider, FormControlLabel, FormGroup, IconButton, List, ListItem, ListItemIcon, Typography } from '@material-ui/core'
-import { Close, ExpandMore } from '@material-ui/icons'
-import React from 'react'
+import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Checkbox, Divider, FormControlLabel, FormGroup, IconButton, List, ListItem, ListItemIcon, TextField, Typography } from '@material-ui/core'
+import { Close, ExpandMore, Search } from '@material-ui/icons'
+import React, { useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 
 const useStyles = makeStyles((theme) => ({
@@ -12,6 +12,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function FilterBar(props) {
     const classes = useStyles();
+
+    const [ idValue, setIdValue ] = useState('')
 
     const compareNumbers = (a, b) => {
         return a - b
@@ -75,6 +77,15 @@ export default function FilterBar(props) {
         props.handleFilterChange('TYPE', event.target.value, event.target.checked)
     }
 
+    const handleEdit = (event) => {
+        setIdValue(event.target.value)
+    }
+
+    const idSearch = (e) => {
+        e.preventDefault()
+        props.handleIdSearch(idValue)
+    }
+
     return (
         <Box>
             <div className={classes.close}>
@@ -82,6 +93,21 @@ export default function FilterBar(props) {
                     <Close />
                 </IconButton>
             </div>
+            <List>
+                <ListItem>
+                    <form>
+                        <TextField
+                            variant="outlined"
+                            label="Check by token ID"
+                            onChange={handleEdit}
+                            value={idValue}
+                        />
+                        <IconButton type="submit" color="secondary" onClick={idSearch}>
+                            <Search />
+                        </IconButton>
+                    </form>
+                </ListItem>
+            </List>
             <Divider />
             <Accordion>
                 <AccordionSummary

@@ -8,6 +8,7 @@ import GemGrid from './components/GemGrid'
 
 import data from './data/QUALITY_RANKING'
 import images from './data/images'
+import GemDialog from './components/GemDialog'
 
 const theme = createTheme({
     palette: {
@@ -42,6 +43,10 @@ export default function App() {
     })
     const [ isDrawerOpen, setIsDrawerOpen ] = useState(false)
 
+    const [ isDialogOpen, setDialogOpen ] = useState(false)
+    const [ isNotFound, setIsNotFound ] = useState(false)
+    const [ searchData, setSearchData ] = useState([])
+
     useEffect(async () => {
         setFilteredData(filterData(data, buildFilter(filter)))
     }, [])
@@ -70,7 +75,7 @@ export default function App() {
             return true
         })
         return filt
-    };
+    }
 
     const onFilterChange = (key, value, bool) => {
         let currentfilter = filter
@@ -87,8 +92,24 @@ export default function App() {
         setFilteredData(filterData(data, buildFilter(filter)))
     }
 
+    const submitIdSearch = tokenId => {
+        const searched = data.filter(gem => gem['TOKEN ID'] === Number(tokenId))
+        
+        if (searched.length) {
+            setSearchData(searched[0])
+        } else {
+            setIsNotFound(true)
+        }
+        setDialogOpen(true)
+    }
+    const doClose = () => {
+        setIsNotFound(false)
+        setDialogOpen(false)
+    }
+
     return (
         <ThemeProvider theme={theme}>
+            <GemDialog open={isDialogOpen} gem={searchData} images={images} handlesearchClose={doClose} isNotFound={isNotFound} />
             <MainMenu handleHamburgerClick={toggleDrawer} />
             <GemGrid data={filteredData} images={images} />
             <Drawer
@@ -96,7 +117,7 @@ export default function App() {
                 open={isDrawerOpen}
                 onClose={toggleDrawer}
             >
-                <FilterBar handleClose={toggleDrawer} handleFilterChange={onFilterChange} data={data} filter={filter} />
+                <FilterBar handleClose={toggleDrawer} handleFilterChange={onFilterChange} data={data} filter={filter} handleIdSearch={submitIdSearch} />
             </Drawer>
         </ThemeProvider>
     )

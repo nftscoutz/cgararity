@@ -30,7 +30,6 @@ export default function GemGrid(props) {
     }
 
     useEffect(() => {
-        console.log(props.data.sort(byRank))
         const thisPage = paginate(props.data.sort(byRank), pageSize, 1)
         
         setPaginated(thisPage)
